@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monitoring Server Compact</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #ffffff; /* Background putih */
+      font-size: 0.9rem;
+      font-family: 'Poppins', sans-serif;
+      color: #333; /* Warna teks default */
+    }
+    /* Styling untuk judul */
+    .custom-heading {
+      background: #f7f7f7; /* Background abu-abu muda */
+      border-left: 5px solid #6a11cb; /* Border kiri ungu */
+      color: #333;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+    /* Styling card */
+    .card {
+      border: 1px solid #ddd; /* Border abu-abu tipis */
+      border-radius: 8px;
+      background: #fff; /* Background putih */
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); /* Shadow ringan */
+      margin-bottom: 15px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(106, 17, 203, 0.1); /* Shadow lembut dengan aksen ungu */
+    }
+    .card-header {
+      font-weight: bold;
+      font-size: 1rem;
+      background: #6a11cb; /* Header ungu */
+      color: #fff; /* Teks putih */
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      padding: 8px 12px;
+    }
+    .card-body {
+      padding: 8px 12px;
+    }
+    .status-on {
+      color: #4CAF50; /* Hijau untuk status ON */
+    }
+    .status-off {
+      color: #FF5252; /* Merah untuk status OFF */
+    }
+    .highlight-purple {
+      color: #6a11cb; /* Warna ungu untuk highlight */
+      font-weight: 600;
+    }
+    .spinner-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .spinner-border {
+      width: 2.5rem;
+      height: 2.5rem;
+      animation: spin 1s linear infinite;
+      border-color: #6a11cb transparent transparent transparent; /* Spinner dengan warna ungu */
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    /* Media Query untuk Layar Kecil */
+    @media (max-width: 480px) {
+      .custom-heading {
+        font-size: 1rem;
+      }
+      .card-header {
+        font-size: 0.9rem;
+      }
+      .card-body {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container my-4">
+    <h5 class="custom-heading">STATUS SERVER</h5>
+    <!-- Loader dengan spinner Bootstrap kecil -->
+    <div id="loader" class="spinner-container">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div class="row" id="statusContainer">
+      <!-- Card status server akan ditampilkan di sini -->
+    </div>
+  </div>
+
+  <script>
+    async function fetchStatus() {
+      const container = document.getElementById('statusContainer');
+      const loader = document.getElementById('loader');
+
+      // Tampilkan loader jika kontainer masih kosong
+      if (container.innerHTML.trim() === '') {
+        loader.style.display = 'flex';
+      }
+
+      try {
+        const response = await fetch('/status');
+        if (!response.ok) throw new Error('Gagal mengambil data');
+        const data = await response.json();
+        container.innerHTML = '';
+
+        data.forEach(vps => {
+          // Buat kolom untuk setiap card
+          const col = document.createElement('div');
+          col.className = 'col-md-4 col-sm-6';
+
+          // Buat card
+          const card = document.createElement('div');
+          card.className = 'card';
+
+          // Ikon-ikon
+          const serverIcon = '<i class="fa-solid fa-server"></i>';
+          const statusIcon = vps.status === 'ON'
+            ? '<i class="fa-solid fa-check-circle"></i>'
+            : '<i class="fa-solid fa-times-circle"></i>';
+          const latencyIcon = '<i class="fa-solid fa-wifi"></i>';
+
+          card.innerHTML = `
+            <div class="card-header">
+              ${serverIcon} ${vps.name}
+            </div>
+            <div class="card-body">
+              <p class="mb-1 ${vps.status === 'ON' ? 'status-on' : 'status-off'}">
+                ${statusIcon} Status: <span class="highlight-purple">${vps.status}</span>
+              </p>
+              <p class="mb-1">
+                ${latencyIcon} Latency: <span class="highlight-purple">${vps.latency || '-'}</span>
+              </p>
+              <p class="mb-0">
+                <i class="fa-solid fa-users"></i> User: <span class="highlight-purple">${vps.current_users}/${vps.max_user}</span>
+              </p>
+            </div>
+          `;
+          col.appendChild(card);
+          container.appendChild(col);
+
+          // Animasi fade-in untuk card
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, 100);
+        });
+      } catch (error) {
+        console.error('Error fetching status:', error);
+        container.innerHTML = `
+          <div class="col-12">
+            <div class="alert alert-danger" role="alert">
+              <i class="fa-solid fa-exclamation-circle"></i> Error fetching data. Please try again later.
+            </div>
+          </div>`;
+      } finally {
+        loader.style.display = 'none';
+      }
+    }
+
+    // Perbarui status setiap 50 detik
+    setInterval(fetchStatus, 50000);
+    window.onload = fetchStatus;
+  </script>
+
+  <!-- Bootstrap JS Bundle dengan Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

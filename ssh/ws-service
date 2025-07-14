@@ -1,0 +1,27 @@
+[Unit]
+Description=SSH Over Websocket Python
+Documentation=Mod By san
+After=network.target nss-lookup.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+
+# Izin capability untuk binding port rendah (<1024) jika digunakan
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+
+ExecStart=/usr/bin/python3 -O /usr/local/bin/ws
+
+# Restart policy
+Restart=on-failure
+RestartSec=5s
+
+# Batasan sumber daya opsional
+LimitNOFILE=65535
+LimitMEMLOCK=infinity
+
+[Install]
+WantedBy=multi-user.target
