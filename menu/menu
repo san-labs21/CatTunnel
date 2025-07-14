@@ -1,0 +1,213 @@
+#!/bin/bash
+# ======== IP VERIFICATION ========
+status_ip() {
+    # URL of the IP list file on GitHub with cache busting
+    url="https://raw.githubusercontent.com/san-labs21/CatTunnel/main/permission?$(date +%s)"
+    
+    # Get current VPS IP (with fallback to alternative services)
+    current_ip=$(curl -s --max-time 5 https://ipinfo.io/ip || curl -s --max-time 5 https://api.ipify.org || curl -s --max-time 5 https://ifconfig.me/ip)
+    
+    if [ -z "$current_ip" ]; then
+        echo "——————————————————————————————"
+        echo "          Error Message       "
+        echo "——————————————————————————————"
+        echo "  Failed to detect your IP address"
+        echo "  Please check your internet connection"
+        echo "——————————————————————————————"
+        exit 1
+    fi
+    
+    # Get current date in YYYY-MM-DD format
+    current_date=$(date +%Y-%m-%d)
+    current_date_sec=$(date -d "$current_date" +%s)
+    
+    # Initialize variables
+    found=false
+    expiry_date=""
+    
+    # Fetch IP list with timeout
+    ip_list=$(curl -s --max-time 10 "$url")
+    if [ -z "$ip_list" ]; then
+        echo "——————————————————————————————"
+        echo "          Error Message       "
+        echo "——————————————————————————————"
+        echo "  Failed to fetch IP verification list"
+        echo "  Please try again later or contact support"
+        echo "——————————————————————————————"
+        exit 1
+    fi
+    
+    # Process each line from the IP list
+    while IFS=' ' read -r ip exp_date; do
+        # Skip empty lines or comments
+        [[ -z "$ip" ]] && continue
+        [[ "$ip" =~ ^# ]] && continue
+
+        # If IP matches, store expiry date and mark as found
+        if [ "$current_ip" = "$ip" ]; then
+            expiry_date="$exp_date"
+            found=true
+            break
+        fi
+    done <<< "$ip_list"
+    
+    # If IP not found
+    if ! $found; then
+        echo "——————————————————————————————"
+        echo "          Error Message       "
+        echo "——————————————————————————————"
+        echo "  Your IP is not registered or has expired"
+        echo "  Please register to use this script"
+        echo "  Contact:"
+        echo "  Telegram: Sanmaxx | WhatsApp: 085155208019"
+        echo "——————————————————————————————"
+        exit 1
+    fi
+    
+    # Validate and convert expiry date to seconds
+    expiry_date_sec=$(date -d "$expiry_date" +%s 2>/dev/null)
+    if [ $? -ne 0 ]; then
+        echo "——————————————————————————————"
+        echo "          Error Message       "
+        echo "——————————————————————————————"
+        echo "  Invalid date format for IP $current_ip: $expiry_date"
+        echo "  Please contact support"
+        echo "——————————————————————————————"
+        exit 1
+    fi
+    
+    # Calculate remaining time
+    diff_sec=$(( expiry_date_sec - current_date_sec ))
+    remaining_days=$(( diff_sec / 86400 ))
+    
+    # Determine status
+    if [ $remaining_days -ge 0 ]; then
+        status="Active"
+    else
+        status="Expired"
+        remaining_days=0
+    fi
+    
+    # If expired, show error message
+    if [ "$status" == "Expired" ]; then
+        echo "——————————————————————————————"
+        echo "          Error Message       "
+        echo "——————————————————————————————"
+        echo "  Your IP registration has expired"
+        echo "  Please renew your registration"
+        echo "  Contact:"
+        echo "  Telegram: Sanmaxx | WhatsApp: 085155208019"
+        echo "——————————————————————————————"
+        exit 1
+    else
+        # If active, show status information
+        echo "——————————————————————————————"
+        echo "       IP Status Information  "
+        echo "——————————————————————————————"
+        echo "Status      : $status"
+        echo "Expiry Date : $expiry_date"
+        echo "Remaining   : $remaining_days days"
+        echo "——————————————————————————————"
+    fi
+}
+
+# Check if User is Admin
+# Path to check for admin status
+file_path="/etc/xray/admin"
+
+# Check if file exists
+if [ -f "$file_path" ]; then
+    Admin="∞"
+    echo "——————————————————————————————"
+    echo "       Account Status         "
+    echo "——————————————————————————————"
+    echo "Status      : Active (Owner)"
+    echo "——————————————————————————————"
+else
+    status_ip
+fi
+# ======== END IP VERIFICATION ========
+
+clear
+# Definisi Warna
+BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
+GB='\e[32;1m'    # Green Bold
+NC='\033[0m' # No Color
+
+# Export Informasi Server
+OS_PRETTY=$(grep -E '^PRETTY_NAME=' /etc/os-release | cut -d= -f2 | tr -d '"')
+IP=$(curl -s ifconfig.me)
+ISP=$(curl -s "http://ip-api.com/json/" | jq -r '.isp')
+country=$(curl -s "http://ip-api.com/json/" | jq -r '.country')
+domain=$(cat /etc/xray/domain)
+version=$(cat /etc/xray/version)
+
+# Export Jumlah Akun
+vmess=$(( $(grep -c '##' /etc/xray/config.json 2>/dev/null) / 2 ))
+vless=$(( $(grep -c '#?' /etc/xray/config.json 2>/dev/null) / 2 ))
+trojan=$(( $(grep -c '#!' /etc/xray/config.json 2>/dev/null) / 2 ))
+ssh="$(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd | wc -l)"
+
+echo -e "${BLUE}   ┌──────────────────────────────────────┐${NC}"
+echo -e "${BLUE}   │       =   INFORMASI SERVER  =        │${NC}"
+echo -e "${BLUE}   └──────────────────────────────────────┘${NC}"
+echo -e "    OS SYSTEM           : ${YELLOW}$OS_PRETTY${NC}"
+echo -e "    ISP                 : ${YELLOW}$ISP${NC}"
+echo -e "    REGION              : ${YELLOW}$country${NC}"
+echo -e "    IP                  : ${YELLOW}$IP${NC}"
+echo -e "    DOMAIN              : ${YELLOW}$domain${NC}"
+echo -e "${BLUE}    ─────────${NC}"
+echo -e "    Status              : ${GB}$status${NC} "
+echo -e "    Expired on          : ${GB}${Admin}$expiry_date${NC}"
+echo -e "    Remaining           : ${GB}${Admin}$remaining_days hari${NC}"
+echo -e "${BLUE}   ┌──────────────────────────────────────┐${NC}"
+echo -e "${BLUE}   │ SERVICE            | JUMLAH USER     │${NC}"
+echo -e "${BLUE}   ├────────────────────┼─────────────────┤${NC}"
+printf "   │ %-18s │ %15d │\n" "SSH" "$ssh"
+printf "   │ %-18s │ %15d │\n" "VMess" "$vmess"
+printf "   │ %-18s │ %15d │\n" "VLESS" "$vless"
+printf "   │ %-18s │ %15d │\n" "TROJAN" "$trojan"
+echo -e "${BLUE}   └──────────────────────────────────────┘${NC}"
+echo -e "${YELLOW}   ┌──────────────────────────────────────┐${NC}"
+echo -e "${YELLOW}   │            = MENU UTAMA =            │${NC}"
+echo -e "${YELLOW}   └──────────────────────────────────────┘${NC}"
+echo -e "     ${YELLOW}1. SSH MANAGER      5. BOT-MANAGER   ${NC}"
+echo -e "     ${YELLOW}2. VMESS MANAGER    6. STATUS SERVICE${NC}"
+echo -e "     ${YELLOW}3. VLESS MANAGER    7. RESTART SERVICE ${NC}"
+echo -e "     ${YELLOW}4. TROJAN MANAGER   8. MENU LAIN ${NC}"
+echo -e "${YELLOW}   └──────────────────────────────────────┘${NC}"
+echo -e "           Version Script : $version"
+echo -e ""
+read -p "Select Menu : " pilihan
+
+# Memproses pilihan
+case $pilihan in
+    1)
+        menu_ssh.sh
+        ;;
+    2)
+        menu_vmess.sh
+        ;;
+    3)
+        menu_vless.sh
+        ;;
+    4)
+        menu_trojan.sh
+        ;;
+    5)
+        menu_bot.sh
+        ;;
+    6)
+        status-service.sh
+        ;;
+    7)
+        restart-service.sh
+        ;;
+    8)
+        menu_lain.sh
+        ;;
+    *)
+        menu
+        ;;
+esac
