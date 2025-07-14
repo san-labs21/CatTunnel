@@ -1,7 +1,7 @@
 ## ✅ Fitur Utama
 
 - 🔧 Instalasi sepenuhnya otomatis
-- 🐧 Dioptimalkan untuk [![OS](https://img.shields.io/badge/Sistem_Operasi-Debian_12-blue)](https://www.debian.org/distrib/)
+- 🐧 Support OS Ubuntu 24.04 LTS
 - 🌐 Mendukung:
   - **SSH over WebSocket**
   - **XRay** dengan dukungan:
