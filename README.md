@@ -1,11 +1,3 @@
-## 📌 Deskripsi
-
-**Cat Tunnel** adalah script otomatisasi ringan yang dirancang untuk mempermudah pemasangan layanan tunneling menggunakan protokol SSH dan XRay. Script ini mendukung teknologi tunneling modern seperti **WebSocket**, **VMESS**, **VLESS**, dan **Trojan**, menjadikannya ideal bagi pengguna yang membutuhkan solusi proxy berkinerja tinggi dengan konfigurasi minimal.
-
-Cocok digunakan untuk membuat koneksi aman, melewati firewall, atau mengelola jaringan pribadi — semua dalam satu proses instalasi yang sederhana dan cepat.
-
----
-
 ## ✅ Fitur Utama
 
 - 🔧 Instalasi sepenuhnya otomatis
@@ -28,7 +20,7 @@ Cocok digunakan untuk membuat koneksi aman, melewati firewall, atau mengelola ja
 Untuk menginstal **Cat Tunnel**, cukup jalankan perintah berikut sebagai root:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/san-labs21/CatTunnel/main/install.sh)
+wget -q https://raw.githubusercontent.com/san-labs21/CatTunnel/main/install.sh && chmod +x install.sh && ./install.sh
 ```
 
 ## 🚀 Cara Instalasi RegisIP
