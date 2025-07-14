@@ -15,10 +15,10 @@ read -p "Select Menu (0 To Back Menu) : " pilihan
 # Memproses pilihan
 case $pilihan in
     1)
-        wget -q https://raw.githubusercontent.com/san-labs21/CatTunnel/main/install/install-autobackup.sh && bash install-autobackup.sh
+        wget -q https://raw.githubusercontent.com/san-labs21/CatTunnel/main/install/install-autobackup.sh && chmod +x install-autobackup.sh && ./install-autobackup.sh
         ;;
     2)
-        wget -q https://raw.githubusercontent.com/san-labs21/CatTunnel/main/install/install-bot-manager.sh && bash install-bot-manager.sh
+        wget -q https://raw.githubusercontent.com/san-labs21/CatTunnel/main/install/install-bot-manager.sh && chmod +x install-bot-manager.sh && ./install-bot-manager.sh
         ;;
     0)
         menu
