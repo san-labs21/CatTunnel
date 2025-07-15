@@ -504,7 +504,7 @@ def kirim_backup_ke_admin():
 def jalankan_backup_otomatis():
     while True:
         kirim_backup_ke_admin()
-        time.sleep(3 * 60 * 60)  # 3 jam
+        time.sleep(6 * 60 * 60)  # 6 jam
 
 threading.Thread(target=jalankan_backup_otomatis, daemon=True).start()
 
