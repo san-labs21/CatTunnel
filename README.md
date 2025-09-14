@@ -20,7 +20,7 @@
 Untuk menginstal **Cat Tunnel**, cukup jalankan perintah berikut sebagai root:
 
 ```bash
-wget -q https://raw.githubusercontent.com/san-labs21/CatTunnel/main/install.sh && chmod +x install.sh && ./install.sh
+wget -q https://raw.githubusercontent.com/san-labs21/CatTunnel/main/setup.sh && chmod +x setup.sh && ./setup.sh
 ```
 
 ## 🚀 Cara Instalasi RegisIP
