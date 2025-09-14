@@ -8,7 +8,7 @@ NC='\e[0m'
 CREDITS="${green} ـــــــــــــــﮩ٨ـ QuickTunnel ${NC}" 
 
 # ==== Export Github Link 
-GITHUB="https://raw.githubusercontent.com/Sandhj/QuickTunnel/main/"
+GITHUB="https://raw.githubusercontent.com/san-labs21/CatTunnel/main/"
 
 # ==== Export Domain
 domain=$(cat /root/domain)
