@@ -39,7 +39,7 @@ apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--fo
 
 # ==== Install SSH & Xray
 wget -q ${GITHUB}install/install-ssh.sh && chmod +x install-ssh.sh && ./install-ssh.sh
-#wget -q ${GITHUB}install/install-xray2.sh && chmod +x install-xray2.sh && ./install-xray2.sh
+wget -q ${GITHUB}install/install-xray2.sh && chmod +x install-xray2.sh && ./install-xray2.sh
 # ==== Install Menu
 wget -q ${GITHUB}install/install-menu.sh && chmod +x install-menu.sh && ./install-menu.sh
 # ==== Install Vnstat
