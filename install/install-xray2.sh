@@ -46,14 +46,19 @@ chmod -R 755 /var/log/xray
 echo "d /run/xray 755 www-data www-data -" > /etc/tmpfiles.d/xray.conf
 systemd-tmpfiles --create --prefix=/run/xray
 
-# ==== Install Xray Core
+# ==== Install Xray Core versi 1.8.24 (stabil, support ws/grpc)
 echo -e "${CREDITS}"
-echo -e "Menginstall Xray-core versi terbaru..."
-latest_version="$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
-if ! bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version "$latest_version"; then
-  echo -e "Error: Gagal menginstall Xray-core!"
+echo -e "Menginstall Xray-core versi 1.8.24 (support WebSocket & gRPC)..."
+if ! bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.8.24; then
+  echo -e "Error: Gagal menginstall Xray-core versi 1.8.24!"
   exit 1
 fi
+# Verifikasi versi
+echo -e "✅ Versi Xray yang terinstall:"
+/usr/local/bin/xray version
+# Lock versi (jika pakai apt)
+echo -e "🔒 Lock versi Xray agar tidak ke-upgrade..."
+sudo apt-mark hold xray 2>/dev/null && echo "Versi Xray dikunci." || echo "Tidak menggunakan apt, abaikan."
 
 # ==== Install SSL Certificate
 echo -e "${CREDITS}"
