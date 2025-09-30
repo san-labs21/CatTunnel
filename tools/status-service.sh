@@ -52,6 +52,7 @@ echo ""
 echo "📌 Uptime Sistem: $(uptime -p | sed 's/up //')"
 echo "📅 Waktu Sekarang: $(date +"%Y-%m-%d %H:%M")"
 echo "-------------------------------"
-echo "✔️ Selesai memeriksa layanan."
+
 echo "Tekan Enter Untuk Menuju Menu Utama(↩️)"
 read -s
+menu
