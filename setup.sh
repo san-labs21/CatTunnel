@@ -126,20 +126,42 @@ CRON_JOB="0 3 * * * /usr/bin/clear-cache.sh"
 # ==== Pasang Cek System
 (crontab -l 2>/dev/null; echo "*/5 * * * * /usr/bin/status-service.sh") | crontab -
 
+# ==== Credits
+show_final_credits() {
+    echo ""
+    echo -e "\e[1;97m██████╗  ██████╗  ██████╗██╗  ██╗    ███████╗██████╗  █████╗ ███╗   ██╗"
+    echo -e "\e[1;97m██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝    ██╔════╝██╔══██╗██╔══██╗████╗  ██║"
+    echo -e "\e[1;36m██████╔╝██║   ██║██║     █████╔╝     ███████╗██████╔╝███████║██╔██╗ ██║"
+    echo -e "\e[1;36m██╔══██╗██║   ██║██║     ██╔═██╗     ╚════██║██╔═══╝ ██╔══██║██║╚██╗██║"
+    echo -e "\e[1;94m██████╔╝╚██████╔╝╚██████╗██║  ██╗    ███████║██║     ██║  ██║██║ ╚████║"
+    echo -e "\e[1;94m╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝    ╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝\e[0m"
+    echo ""
+    echo -e "\e[1;92m✅ Instalasi Otomatis Selesai!\e[0m"
+    echo ""
+    echo -e "\e[1;93m🔧 Fitur yang Telah Diaktifkan:\e[0m"
+    echo -e "   • SSH over WebSocket"
+    echo -e "   • XRay (VMESS, VLESS, Trojan)"
+    echo -e "   • TLS Encryption (Auto SSL)"
+    echo -e "   • CDN Ready (Cloudflare Compatible)"
+    echo -e "   • Reverse Proxy via Nginx"
+    echo -e "   • Ringan & Modular"
+    echo ""
+    echo -e "\e[1;95m🛡️  Sistem siap digunakan di Ubuntu 24.04 LTS\e[0m"
+    echo ""
+    echo -e "\e[1;36m──────────────────────────────────────────────────────\e[0m"
+    echo -e "\e[1;97m   Dikembangkan dengan ❤️ oleh:\e[0m"
+    echo -e "\e[1;33m            ┌──────────────┐\e[0m"
+    echo -e "\e[1;33m            │   Mr.SND     │\e[0m"
+    echo -e "\e[1;33m            └──────────────┘\e[0m"
+    echo -e "\e[1;90m   Secure • Fast • Reliable • Open Source Friendly\e[0m"
+    echo -e "\e[1;36m──────────────────────────────────────────────────────\e[0m"
+    echo ""
+    echo -e "\e[1;92m🚀 Selamat menggunakan! Jangan lupa backup & update berkala.\e[0m"
+    echo ""
+}
 
-echo ""
-echo -e "┌─────────────────────────────────────┐"
-echo -e "│   .::  SUCCESFULLY INSTALLED ::.    │"
-echo -e "└─────────────────────────────────────┘"
-echo "   _____      _     _______                     _ "
-echo "  / ____|    | |   |__   __|                   | |"
-echo " | |     __ _| |_     | |_   _ _ __  _ __   ___| |"
-echo " | |    / _\` | __|    | | | | | '_ \\| '_ \ / _ \ |"
-echo " | |___| (_| | |_     | | |_| | | | | | | |  __/ |"
-echo "  \\_____\__,_|\__|    |_|\__,_|_| |_|_| |_|\___|_|"
-echo "                                                  "
-echo "                                                  "
-
+# Panggil fungsi credit di akhir instalasi
+show_final_credits
 rm -rf /root/*
 
 echo "Tekan Enter Untuk Menuju Menu Utama(↩️)"
