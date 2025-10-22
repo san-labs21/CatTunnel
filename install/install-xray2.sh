@@ -90,12 +90,43 @@ echo -e "Mengunduh konfigurasi Xray dan Nginx..."
 wget -q "${GITHUB}tools/config.json" -O /etc/xray/config.json
 wget -q "${GITHUB}tools/xray.conf" -O /etc/nginx/conf.d/xray.conf
 
-# ==== Optimasi Systemd Service Bawaan Xray
-# Tambahkan parameter performa jika diperlukan
-if [ -f "/etc/systemd/system/xray.service" ]; then
-  sed -i '/\[Service\]/a LimitNOFILE=1000000\nLimitNPROC=10000' /etc/systemd/system/xray.service
-  systemctl daemon-reload
-fi
+# === Buat System Service
+rm -rf /etc/systemd/system/xray.service.d
+
+cat <<EOF> /etc/systemd/system/xray.service
+[Unit]
+Description=Xray Service
+Documentation=https://github.com/xtls
+After=network.target nss-lookup.target
+
+[Service]
+User=www-data
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE                                 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+ExecStart=/usr/local/bin/xray run -config /etc/xray/config.json
+Restart=on-failure
+RestartPreventExitStatus=23
+LimitNPROC=10000
+LimitNOFILE=1000000
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > /etc/systemd/system/runn.service <<EOF
+[Unit]
+Description=Quick
+After=network.target
+
+[Service]
+Type=simple
+ExecStartPre=-/usr/bin/mkdir -p /var/run/xray
+ExecStart=/usr/bin/chown www-data:www-data /var/run/xray
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
+EOF
 
 # ==== Restart Services
 echo -e "${CREDITS}"
