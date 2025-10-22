@@ -19,10 +19,10 @@ echo -e "└──────────────────────�
 echo ""
 read -p "Type Your Domain : " domain
 
-mkdir -p /usr/local/etc/xray/limitip/
-mkdir -p /usr/local/etc/xray/history/
+mkdir -p /etc/xray/limitip/
+mkdir -p /etc/xray/history/
 echo $domain >> /root/domain
-echo $domain >> /usr/local/etc/xray/domain
+echo $domain >> /etc/xray/domain
 
 # Jangan tampilkan prompt untuk iptables-persistent
 echo 'iptables-persistent iptables-persistent/autosave_v4 boolean false' | sudo debconf-set-selections
@@ -39,7 +39,7 @@ apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--fo
 
 # ==== Install SSH & Xray
 wget -q ${GITHUB}install/install-ssh.sh && chmod +x install-ssh.sh && ./install-ssh.sh
-wget -q ${GITHUB}install/install-xray.sh && chmod +x install-xray.sh && ./install-xray.sh
+wget -q ${GITHUB}install/install-xray2.sh && chmod +x install-xray2.sh && ./install-xray2.sh
 # ==== Install Menu
 wget -q ${GITHUB}install/install-menu.sh && chmod +x install-menu.sh && ./install-menu.sh
 # ==== Install Vnstat
@@ -105,7 +105,7 @@ chmod 644 /root/.profile
 cd /usr/bin/
 wget -q ${GITHUB}tools/check-ip-limit.sh && chmod +x check-ip-limit.sh
 cd
-cd /usr/local/etc/xray/limitip
+cd /etc/xray/limitip
 wget -q ${GITHUB}tools/clients_limit.conf
 cd
 
@@ -118,7 +118,7 @@ CRON_JOB="0 3 * * * /usr/bin/clear-cache.sh"
 (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
 
 # ==== Pasang auto Delete Expired
-(crontab -l 2>/dev/null; echo "0 3* * * /usr/bin/expired.sh") | crontab -
+(crontab -l 2>/dev/null; echo "0 23 * * * /usr/bin/expired.sh") | crontab -
 
 # ==== Pasang auto Reboot
 (crontab -l 2>/dev/null; echo "0 5 * * * reboot # auto_reboot") | crontab -
@@ -126,42 +126,20 @@ CRON_JOB="0 3 * * * /usr/bin/clear-cache.sh"
 # ==== Pasang Cek System
 (crontab -l 2>/dev/null; echo "*/5 * * * * /usr/bin/status-service.sh") | crontab -
 
-# ==== Credits
-show_final_credits() {
-    echo ""
-    echo -e "\e[1;97m██████╗  ██████╗  ██████╗██╗  ██╗    ███████╗██████╗  █████╗ ███╗   ██╗"
-    echo -e "\e[1;97m██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝    ██╔════╝██╔══██╗██╔══██╗████╗  ██║"
-    echo -e "\e[1;36m██████╔╝██║   ██║██║     █████╔╝     ███████╗██████╔╝███████║██╔██╗ ██║"
-    echo -e "\e[1;36m██╔══██╗██║   ██║██║     ██╔═██╗     ╚════██║██╔═══╝ ██╔══██║██║╚██╗██║"
-    echo -e "\e[1;94m██████╔╝╚██████╔╝╚██████╗██║  ██╗    ███████║██║     ██║  ██║██║ ╚████║"
-    echo -e "\e[1;94m╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝    ╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝\e[0m"
-    echo ""
-    echo -e "\e[1;92m✅ Instalasi Otomatis Selesai!\e[0m"
-    echo ""
-    echo -e "\e[1;93m🔧 Fitur yang Telah Diaktifkan:\e[0m"
-    echo -e "   • SSH over WebSocket"
-    echo -e "   • XRay (VMESS, VLESS, Trojan)"
-    echo -e "   • TLS Encryption (Auto SSL)"
-    echo -e "   • CDN Ready (Cloudflare Compatible)"
-    echo -e "   • Reverse Proxy via Nginx"
-    echo -e "   • Ringan & Modular"
-    echo ""
-    echo -e "\e[1;95m🛡️  Sistem siap digunakan di Ubuntu 24.04 LTS\e[0m"
-    echo ""
-    echo -e "\e[1;36m──────────────────────────────────────────────────────\e[0m"
-    echo -e "\e[1;97m   Dikembangkan dengan ❤️ oleh:\e[0m"
-    echo -e "\e[1;33m            ┌──────────────┐\e[0m"
-    echo -e "\e[1;33m            │   Mr.SND     │\e[0m"
-    echo -e "\e[1;33m            └──────────────┘\e[0m"
-    echo -e "\e[1;90m   Secure • Fast • Reliable • Open Source Friendly\e[0m"
-    echo -e "\e[1;36m──────────────────────────────────────────────────────\e[0m"
-    echo ""
-    echo -e "\e[1;92m🚀 Selamat menggunakan! Jangan lupa backup & update berkala.\e[0m"
-    echo ""
-}
 
-# Panggil fungsi credit di akhir instalasi
-show_final_credits
+echo ""
+echo -e "┌─────────────────────────────────────┐"
+echo -e "│   .::  SUCCESFULLY INSTALLED ::.    │"
+echo -e "└─────────────────────────────────────┘"
+echo "   _____      _     _______                     _ "
+echo "  / ____|    | |   |__   __|                   | |"
+echo " | |     __ _| |_     | |_   _ _ __  _ __   ___| |"
+echo " | |    / _\` | __|    | | | | | '_ \\| '_ \ / _ \ |"
+echo " | |___| (_| | |_     | | |_| | | | | | | |  __/ |"
+echo "  \\_____\__,_|\__|    |_|\__,_|_| |_|_| |_|\___|_|"
+echo "                                                  "
+echo "                                                  "
+
 rm -rf /root/*
 
 echo "Tekan Enter Untuk Menuju Menu Utama(↩️)"
