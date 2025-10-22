@@ -113,7 +113,7 @@ LimitNOFILE=1000000
 WantedBy=multi-user.target
 EOF
 
-cat > /etc/systemd/system/runn.service <<EOF
+cat <<EOF> /etc/systemd/system/runn.service
 [Unit]
 Description=Quick
 After=network.target
