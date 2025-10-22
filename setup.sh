@@ -19,10 +19,10 @@ echo -e "└──────────────────────�
 echo ""
 read -p "Type Your Domain : " domain
 
-mkdir -p /etc/xray/limitip/
-mkdir -p /etc/xray/history/
+mkdir -p /usr/local/etc/xray/limitip/
+mkdir -p /usr/local/etc/xray/history/
 echo $domain >> /root/domain
-echo $domain >> /etc/xray/domain
+echo $domain >> /usr/local/etc/xray/domain
 
 # Jangan tampilkan prompt untuk iptables-persistent
 echo 'iptables-persistent iptables-persistent/autosave_v4 boolean false' | sudo debconf-set-selections
@@ -39,7 +39,7 @@ apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--fo
 
 # ==== Install SSH & Xray
 wget -q ${GITHUB}install/install-ssh.sh && chmod +x install-ssh.sh && ./install-ssh.sh
-wget -q ${GITHUB}install/install-xray2.sh && chmod +x install-xray2.sh && ./install-xray2.sh
+wget -q ${GITHUB}install/install-xray.sh && chmod +x install-xray2.sh && ./install-xray2.sh
 # ==== Install Menu
 wget -q ${GITHUB}install/install-menu.sh && chmod +x install-menu.sh && ./install-menu.sh
 # ==== Install Vnstat
@@ -105,7 +105,7 @@ chmod 644 /root/.profile
 cd /usr/bin/
 wget -q ${GITHUB}tools/check-ip-limit.sh && chmod +x check-ip-limit.sh
 cd
-cd /etc/xray/limitip
+cd /usr/local/etc/xray/limitip
 wget -q ${GITHUB}tools/clients_limit.conf
 cd
 
